@@ -42,8 +42,9 @@ class Controller():
         Thread(target=run, daemon=True).start()
 
     def terminate(self):
-        World._LOG_FILE_POINTER.flush()
-        World._LOG_FILE_POINTER.close()
+        if World._LOG_FILE_POINTER is not None:
+            World._LOG_FILE_POINTER.flush()
+            World._LOG_FILE_POINTER.close()
         print("finished!")
         self.network.close()
         self.sending_flag = False

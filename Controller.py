@@ -1,4 +1,5 @@
 import os
+import sys
 
 __author__ = 'pezzati'
 
@@ -76,4 +77,6 @@ class Controller():
 
 
 c = Controller()
+if len(sys.argv) > 1 and sys.argv[1] == '--verbose':
+    World._DEBUGGING_MODE = True
 c.start()

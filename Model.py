@@ -24,6 +24,7 @@ class World:
     INITIAL_STORMS_COUNT = None
     STORM_RANGE = None
     _DEBUGGING_MODE = False
+    _LOG_FILE_POINTER = None
 
     def __init__(self, queue):
         self.queue = queue
@@ -42,7 +43,10 @@ class World:
 
     def _handle_init_message(self, msg):
         if World._DEBUGGING_MODE:
-            print(msg)
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write(str(msg))
+            World._LOG_FILE_POINTER.write('\n')
         msg = msg['args'][0]
         self.map = [Map(msg['map']), Map(msg['map'])]
         for path in msg['paths']:
@@ -110,7 +114,10 @@ class World:
         self.current_turn += 1
         msg = msg['args'][0]
         if World._DEBUGGING_MODE:
-            print(msg)
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write(str(msg))
+            World._LOG_FILE_POINTER.write('\n')
         self.dead_units_in_this_turn = []
         self.passed_units_in_this_turn = []
         self.destroyed_towers_in_this_turn = []
@@ -260,37 +267,58 @@ class World:
 
     def create_light_unit(self, path_index):
         if World._DEBUGGING_MODE:
-            print('cu, ' + str([UnitType.light_armor.value, path_index]))
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write('cu, ' + str([UnitType.light_armor.value, path_index]))
+            World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('cu', [UnitType.light_armor.value, path_index]))
 
     def create_heavy_unit(self, path_index):
         if World._DEBUGGING_MODE:
-            print('cu' + str([UnitType.heavy_armor.value, path_index]))
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write('cu' + str([UnitType.heavy_armor.value, path_index]))
+            World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('cu', [UnitType.heavy_armor.value, path_index]))
 
     def create_cannon_tower(self, level, x, y):
         if World._DEBUGGING_MODE:
-            print('ct, ' + str([TowerType.cannon_tower.value, level, x, y]))
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write('ct, ' + str([TowerType.cannon_tower.value, level, x, y]))
+            World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('ct', [TowerType.cannon_tower.value, level, x, y]))
 
     def create_archer_tower(self, level, x, y):
         if World._DEBUGGING_MODE:
-            print('ct, ' + str([TowerType.archer_tower.value, level, x, y]))
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write('ct, ' + str([TowerType.archer_tower.value, level, x, y]))
+            World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('ct', [TowerType.archer_tower.value, level, x, y]))
 
     def upgrade_tower(self, tower):
         if World._DEBUGGING_MODE:
-            print('ut, ' + str([tower.get_id()]))
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write('ut, ' + str([tower.get_id()]))
+            World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('ut', [tower.get_id()]))
 
     def create_storm(self, x, y):
         if World._DEBUGGING_MODE:
-            print('s, ' + str([x, y]))
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write('s, ' + str([x, y]))
+            World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('s', [x, y]))
 
     def plant_bean(self, x, y):
         if World._DEBUGGING_MODE:
-            print('s, ' + str([x, y]))
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write('s, ' + str([x, y]))
+            World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('b', [x, y]))
 
     def is_tower_constructable(self, x, y):
@@ -316,31 +344,49 @@ class World:
         return self.get_my_map().get_paths()
 
     def _print_log(self):
+        if World._LOG_FILE_POINTER is None:
+            World._LOG_FILE_POINTER = open("client.log", 'w')
+        World._LOG_FILE_POINTER.write("turn number " + str(self.get_current_turn()) + ' : ')
+        World._LOG_FILE_POINTER.write('\n')
         l = []
         for m in self.get_my_units():
             l += [str(m.get_id())]
-        print(l)
+        World._LOG_FILE_POINTER.write(str(l))
+        World._LOG_FILE_POINTER.write('\n')
         l = []
         for m in self.get_enemy_units():
             l += [str(m.get_id())]
-        print(l)
+        World._LOG_FILE_POINTER.write(str(l))
+        World._LOG_FILE_POINTER.write('\n')
         l = []
         for m in self.get_my_towers():
             l += [str(m.get_id())]
-        print(l)
+        World._LOG_FILE_POINTER.write(str(l))
+        World._LOG_FILE_POINTER.write('\n')
         l = []
         for m in self.get_visible_enemy_towers():
             l += [str(m.get_id())]
-        print(l)
-        print(self.get_visible_enemy_towers())
-        print(self.get_my_towers())
-        print(self.get_my_units())
-        print(self.get_enemy_units())
-        print(self.get_passed_units_in_this_turn())
-        print(self.get_destroyed_towers_in_this_turn())
-        print(self.get_dead_units_in_this_turn())
-        print(self.get_beans_in_this_turn())
-        print(self.get_storms_in_this_turn())
+        World._LOG_FILE_POINTER.write(str(l))
+        World._LOG_FILE_POINTER.write('\n')
+
+        World._LOG_FILE_POINTER.write(str(self.get_visible_enemy_towers()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_my_towers()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_my_units()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_enemy_units()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_passed_units_in_this_turn()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_destroyed_towers_in_this_turn()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_dead_units_in_this_turn()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_beans_in_this_turn()))
+        World._LOG_FILE_POINTER.write('\n')
+        World._LOG_FILE_POINTER.write(str(self.get_storms_in_this_turn()))
+        World._LOG_FILE_POINTER.write('\n')
 
 
 class Point:

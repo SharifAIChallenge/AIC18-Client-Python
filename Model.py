@@ -321,6 +321,17 @@ class World:
             World._LOG_FILE_POINTER.write('\n')
         self.queue.put(Event('b', [x, y]))
 
+    def _get_end_message(self):
+        return Event('end', [self.get_current_turn()])
+
+    def end_turn(self, end_message):
+        if World._DEBUGGING_MODE:
+            if World._LOG_FILE_POINTER is None:
+                World._LOG_FILE_POINTER = open("client.log", 'w')
+            World._LOG_FILE_POINTER.write(end_message.type)
+            World._LOG_FILE_POINTER.write('\n')
+        self.queue.put(end_message)
+
     def is_tower_constructable(self, x, y):
         cell = self.get_defence_map().get_cell(x, y)
         if type(cell) in [RoadCell, BlockCell]:

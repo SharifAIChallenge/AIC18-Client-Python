@@ -126,19 +126,19 @@ class World:
 
         for bean in msg['events']['beans']:
             if bean[0] == 0:   #FIXME not sure about index
-                self.beans_in_this_turn.append(BeanEvent(bean[1], Owner.ME))
-                self.map[Owner.ENEMY.value].get_cells_grid()[int(bean[1]['x'])][int(bean[1]['y'])] = \
-                    BlockCell(int(bean[1]['x']), int(bean[1]['y']))
-            if bean[0] == 1:
                 self.beans_in_this_turn.append(BeanEvent(bean[1], Owner.ENEMY))
                 self.map[Owner.ME.value].get_cells_grid()[int(bean[1]['x'])][int(bean[1]['y'])] = \
+                    BlockCell(int(bean[1]['x']), int(bean[1]['y']))
+            if bean[0] == 1:
+                self.beans_in_this_turn.append(BeanEvent(bean[1], Owner.ME))
+                self.map[Owner.ENEMY.value].get_cells_grid()[int(bean[1]['x'])][int(bean[1]['y'])] = \
                     BlockCell(int(bean[1]['x']), int(bean[1]['y']))
 
         for storm in msg['events']['storms']:
             if storm[0] == 0:
-                self.storms_in_this_turn.append(StormEvent(storm[1], Owner.ENEMY))
-            if storm[0] == 1:
                 self.storms_in_this_turn.append(StormEvent(storm[1], Owner.ME))
+            if storm[0] == 1:
+                self.storms_in_this_turn.append(StormEvent(storm[1], Owner.ENEMY))
 
         for dead in msg['events']['deadunits']:
             self.dead_units_in_this_turn.append(self._units[dead[1]])

@@ -158,10 +158,10 @@ class World:
             new_unit = None
             if unit[1] == UnitType.light_armor.value:
                 new_unit = LightUnit(unit, Owner.ME,
-                                     self.map[Owner.ME.value].paths[int(unit[6])])
+                                     self.map[Owner.ENEMY.value].paths[int(unit[6])])
             if unit[1] == UnitType.heavy_armor.value:
                 new_unit = HeavyUnit(unit, Owner.ME,
-                                     self.map[Owner.ME.value].paths[int(unit[6])])
+                                     self.map[Owner.ENEMY.value].paths[int(unit[6])])
             self.map[Owner.ENEMY.value].get_cell_loc(unit[4]).add_unit(new_unit)
             self.map[Owner.ENEMY.value].get_units().append(new_unit)
             self._units[unit[0]] = new_unit

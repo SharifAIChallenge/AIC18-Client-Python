@@ -763,10 +763,11 @@ class CannonTower(Tower):
     def get_price(self, lvl=None):
         if lvl is None:
             lvl = self.level
-        if lvl == 1:
-            return CannonTower.INITIAL_PRICE
-        return int(CannonTower.INITIAL_PRICE +
-                   CannonTower.INITIAL_LEVEL_UP_PRICE * CannonTower.PRICE_COEFF ** (lvl - 2))
+
+        result = CannonTower.INITIAL_PRICE
+        for i in range(2, lvl + 1):
+            result = result + int(CannonTower.INITIAL_LEVEL_UP_PRICE * CannonTower.PRICE_COEFF ** (i-2))
+        return result
 
     def get_attack_range(self, lvl=None):
         return CannonTower.ATTACK_RANGE
@@ -798,10 +799,11 @@ class ArcherTower(Tower):
     def get_price(self, lvl=None):
         if lvl is None:
             lvl = self.level
-        if lvl == 1:
-            return ArcherTower.INITIAL_PRICE
-        return int(ArcherTower.INITIAL_PRICE +
-                   ArcherTower.INITIAL_LEVEL_UP_PRICE * ArcherTower.PRICE_COEFF ** (lvl - 2))
+
+        result = ArcherTower.INITIAL_PRICE
+        for i in range(2, lvl + 1):
+            result = result + int(ArcherTower.INITIAL_LEVEL_UP_PRICE * ArcherTower.PRICE_COEFF ** (i-2))
+        return result
 
     def get_attack_range(self, lvl=None):
         if lvl is None:

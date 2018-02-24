@@ -67,18 +67,14 @@ class Controller():
             self.terminate()
             
     def do_turn(self):
+        end_message = self.world._get_end_message()
+        self.turn_num += 1
+        if self.turn_num % 10 == 0:
+            self.client.complex_turn(self.world)
+        else:
+            self.client.simple_turn(self.world)
+        self.world.end_turn(end_message)
 
-        def run():
-            end_message = self.world._get_end_message()
-            self.turn_num += 1
-            if self.turn_num % 10 == 0:
-                self.client.complex_turn(self.world)
-            else:
-                self.client.simple_turn(self.world)
-            self.world.end_turn(end_message)
-
-
-        Thread(target=run, daemon=True).start()
 
 
 c = Controller()

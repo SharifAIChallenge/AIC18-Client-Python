@@ -49,6 +49,7 @@ class World:
             World._LOG_FILE_POINTER.write('\n')
         msg = msg['args'][0]
         self.map = [Map(msg['map']), Map(msg['map'])]
+        print(self.map[0].get_cells_grid())
         for path in msg['paths']:
             path_cells0 = []
             path_cells1 = []
@@ -100,6 +101,10 @@ class World:
         ArcherTower.ATTACK_SPEED = int(params[7][0][5])
         ArcherTower.ATTACK_RANGE = int(params[7][0][6])
         ArcherTower.ATTACK_RANGE_SUM = float(params[7][0][7])
+        if len(params[7][0]) > 8:
+            ArcherTower.INITIAL_PRICE_INCREASE = int(params[7][0][8])
+        else:
+            ArcherTower.INITIAL_PRICE_INCREASE = 5
 
         CannonTower.INITIAL_PRICE = int(params[7][1][0])
         CannonTower.INITIAL_LEVEL_UP_PRICE = int(params[7][1][1])
@@ -109,6 +114,10 @@ class World:
         CannonTower.ATTACK_SPEED = int(params[7][1][5])
         CannonTower.ATTACK_RANGE = int(params[7][1][6])
         CannonTower.ATTACK_RANGE_SUM = float(params[7][1][7])
+        if len(params[7][1]) > 8:
+            CannonTower.INITIAL_PRICE_INCREASE = int(params[7][1][8])
+        else:
+            CannonTower.INITIAL_PRICE_INCREASE = 5
 
     def _handle_turn_message(self, msg):
         self.current_turn += 1
@@ -722,13 +731,16 @@ class LightUnit(Unit):
 class Tower(Entity):
     def __init__(self, params, owner):
         Entity.__init__(self, params[3], owner, int(params[0]))
+        self.price = None
+        if len(params) > 4:
+            self.price = int(params[4])
         self.level = int(params[2])
 
     def get_damage(self, lvl=None):
         pass
 
     def get_price(self, lvl=None):
-        pass
+        return self.price
 
     def get_attack_range(self, lvl=None):
         pass
@@ -743,6 +755,7 @@ class Tower(Entity):
 class CannonTower(Tower):
     INITIAL_PRICE = None
     INITIAL_LEVEL_UP_PRICE = None
+    INITIAL_PRICE_INCREASE = None
     PRICE_COEFF = None
 
     INITIAL_DAMAGE = None
@@ -760,13 +773,13 @@ class CannonTower(Tower):
             lvl = self.level
         return int(CannonTower.INITIAL_DAMAGE * CannonTower.DAMAGE_COEFF ** (lvl - 1))
 
-    def get_price(self, lvl=None):
-        if lvl is None:
-            lvl = self.level
-        if lvl == 1:
-            return CannonTower.INITIAL_PRICE
-        return int(CannonTower.INITIAL_PRICE +
-                   CannonTower.INITIAL_LEVEL_UP_PRICE * CannonTower.PRICE_COEFF ** (lvl - 2))
+    # def get_price(self, lvl=None):
+    #     if lvl is None:
+    #         lvl = self.level
+    #     if lvl == 1:
+    #         return CannonTower.INITIAL_PRICE
+    #     return int(CannonTower.INITIAL_PRICE +
+    #                CannonTower.INITIAL_LEVEL_UP_PRICE * CannonTower.PRICE_COEFF ** (lvl - 2))
 
     def get_attack_range(self, lvl=None):
         if lvl is None:
@@ -780,6 +793,7 @@ class CannonTower(Tower):
 class ArcherTower(Tower):
     INITIAL_PRICE = None
     INITIAL_LEVEL_UP_PRICE = None
+    INITIAL_PRICE_INCREASE = None
     PRICE_COEFF = None
 
     INITIAL_DAMAGE = None
@@ -797,13 +811,13 @@ class ArcherTower(Tower):
             lvl = self.level
         return int(ArcherTower.INITIAL_DAMAGE * ArcherTower.DAMAGE_COEFF ** (lvl - 1))
 
-    def get_price(self, lvl=None):
-        if lvl is None:
-            lvl = self.level
-        if lvl == 1:
-            return ArcherTower.INITIAL_PRICE
-        return int(ArcherTower.INITIAL_PRICE +
-                   ArcherTower.INITIAL_LEVEL_UP_PRICE * ArcherTower.PRICE_COEFF ** (lvl - 2))
+    # def get_price(self, lvl=None):
+    #     if lvl is None:
+    #         lvl = self.level
+    #     if lvl == 1:
+    #         return ArcherTower.INITIAL_PRICE
+    #     return int(ArcherTower.INITIAL_PRICE +
+    #                ArcherTower.INITIAL_LEVEL_UP_PRICE * ArcherTower.PRICE_COEFF ** (lvl - 2))
 
     def get_attack_range(self, lvl=None):
         if lvl is None:

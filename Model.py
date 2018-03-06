@@ -49,7 +49,6 @@ class World:
             World._LOG_FILE_POINTER.write('\n')
         msg = msg['args'][0]
         self.map = [Map(msg['map']), Map(msg['map'])]
-        print(self.map[0].get_cells_grid())
         for path in msg['paths']:
             path_cells0 = []
             path_cells1 = []
@@ -782,9 +781,7 @@ class CannonTower(Tower):
     #                CannonTower.INITIAL_LEVEL_UP_PRICE * CannonTower.PRICE_COEFF ** (lvl - 2))
 
     def get_attack_range(self, lvl=None):
-        if lvl is None:
-            lvl = self.level
-        return int(CannonTower.ATTACK_RANGE + CannonTower.ATTACK_RANGE_SUM * (lvl - 1))
+        return CannonTower.ATTACK_RANGE
 
     def get_attack_speed(self):
         return CannonTower.ATTACK_SPEED
@@ -822,7 +819,7 @@ class ArcherTower(Tower):
     def get_attack_range(self, lvl=None):
         if lvl is None:
             lvl = self.level
-        return int(ArcherTower.ATTACK_RANGE + ArcherTower.ATTACK_RANGE_SUM * (lvl - 1))
+        return int(ArcherTower.ATTACK_RANGE)
 
     def get_attack_speed(self):
         return ArcherTower.ATTACK_SPEED

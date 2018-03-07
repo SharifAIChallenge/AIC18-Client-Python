@@ -730,7 +730,7 @@ class LightUnit(Unit):
 class Tower(Entity):
     def __init__(self, params, owner):
         Entity.__init__(self, params[3], owner, int(params[0]))
-        self.price = None
+        self.price = 0
         if len(params) > 4:
             self.price = int(params[4])
         self.level = int(params[2])
